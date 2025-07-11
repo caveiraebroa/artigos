@@ -271,6 +271,20 @@
         // Dados dos relacionamentos
         let relacionamentos = {};
 
+        // Carregar dados salvos ao iniciar
+        function carregarDadosSalvos() {
+            const dadosSalvos = localStorage.getItem('relacionamentosCTB');
+            if (dadosSalvos) {
+                relacionamentos = JSON.parse(dadosSalvos);
+                mostrarStatus('📂 Dados anteriores carregados!', 'success');
+            }
+        }
+
+        // Salvar dados automaticamente
+        function salvarDados() {
+            localStorage.setItem('relacionamentosCTB', JSON.stringify(relacionamentos));
+        }
+
         // Gerar lista de artigos (1 a 341)
         function gerarArtigos() {
             const container = document.getElementById('artigosContainer');
@@ -288,6 +302,33 @@
                     <button class="btn-ok" onclick="salvarArtigo(${i})">OK</button>
                 `;
                 container.appendChild(row);
+            }
+
+            // Restaurar estado das linhas já salvas
+            restaurarEstadoLinhas();
+        }
+
+        // Restaurar estado das linhas já salvas
+        function restaurarEstadoLinhas() {
+            for (const [artigo, relacionados] of Object.entries(relacionamentos)) {
+                const numeroArtigo = artigo.replace('art_', '');
+                const campos = document.querySelectorAll(`[data-artigo="${numeroArtigo}"]`);
+                const btn = document.querySelector(`[onclick="salvarArtigo(${numeroArtigo})"]`);
+                
+                // Preencher campos com dados salvos
+                relacionados.forEach((rel, index) => {
+                    if (campos[index]) {
+                        campos[index].value = rel.replace('art_', '');
+                    }
+                });
+                
+                // Marcar como concluído
+                btn.textContent = '✓';
+                btn.classList.add('salvo');
+                btn.disabled = true;
+                campos.forEach(campo => {
+                    campo.disabled = true;
+                });
             }
         }
 
@@ -309,6 +350,9 @@
 
             if (relacionados.length > 0) {
                 relacionamentos[`art_${numeroArtigo}`] = relacionados;
+                
+                // Salvar automaticamente
+                salvarDados();
                 
                 // Marcar botão como salvo e desabilitar campos
                 const btn = document.querySelector(`[onclick="salvarArtigo(${numeroArtigo})"]`);
@@ -335,7 +379,9 @@
             let csv = 'artigo,relacionados\n';
             
             for (const [artigo, relacionados] of Object.entries(relacionamentos)) {
-                csv += `"${artigo}","${relacionados.join(', ')}"\n`;
+                // Formato correto: cada relacionado separado entre aspas
+                const relacionadosFormatados = relacionados.map(rel => `"${rel}"`).join(', ');
+                csv += `"${artigo}","${relacionadosFormatados}"\n`;
             }
 
             // Criar e baixar arquivo
@@ -354,13 +400,22 @@
 
         // Limpar todos os campos
         function limparTudo() {
-            if (confirm('Tem certeza que deseja limpar todos os campos?')) {
+            if (confirm('Tem certeza que deseja limpar todos os campos? Isso apagará todos os dados salvos!')) {
                 const campos = document.querySelectorAll('.campo-relacionamento');
                 campos.forEach(campo => {
                     campo.value = '';
+                    campo.disabled = false;
+                });
+                
+                const botoes = document.querySelectorAll('.btn-ok');
+                botoes.forEach(btn => {
+                    btn.textContent = 'OK';
+                    btn.classList.remove('salvo');
+                    btn.disabled = false;
                 });
                 
                 relacionamentos = {};
+                localStorage.removeItem('relacionamentosCTB');
                 mostrarStatus('🗑️ Todos os campos foram limpos!', 'success');
             }
         }
@@ -379,6 +434,7 @@
 
         // Inicializar quando a página carregar
         document.addEventListener('DOMContentLoaded', function() {
+            carregarDadosSalvos();
             gerarArtigos();
             mostrarStatus('📋 Interface carregada! Digite os relacionamentos nos campos.', 'success');
         });
