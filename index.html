@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relacionamentos Artigos CTB - Lista Completa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .instructions {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .instructions h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .instructions ul {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 5px;
+        }
+
+        .artigos-grid {
+            display: grid;
+            grid-template-columns: 120px repeat(5, 1fr) 80px;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .artigo-row {
+            display: grid;
+            grid-template-columns: 120px repeat(5, 1fr) 80px;
+            gap: 10px;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+        }
+
+        .artigo-row:hover {
+            background: #f8f9fa;
+        }
+
+        .artigo-numero {
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
+        }
+
+        .campo-relacionamento {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .campo-relacionamento:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-ok {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-ok:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-ok:active {
+            transform: translateY(0);
+        }
+
+        .btn-ok.salvo {
+            background: #6c757d;
+        }
+
+        .actions {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .btn-gerar-csv {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .btn-gerar-csv:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-limpar {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .btn-limpar:hover {
+            background: #c82333;
+            transform: translateY(-3px);
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .scroll-container {
+            max-height: 600px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 1200px) {
+            .artigos-grid, .artigo-row {
+                grid-template-columns: 100px repeat(3, 1fr) 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .artigos-grid, .artigo-row {
+                grid-template-columns: 80px repeat(2, 1fr) 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Relacionamentos de Artigos - CTB</h1>
+            <p>Lista completa dos artigos 1 a 341 com campos para relacionamentos</p>
+        </div>
+
+        <div class="content">
+            <div class="instructions">
+                <h3>📝 Como usar:</h3>
+                <ul>
+                    <li>Para cada artigo, digite os números dos artigos relacionados nos campos de texto</li>
+                    <li>Clique em "OK" para salvar os relacionamentos daquele artigo</li>
+                    <li>Clique em "📊 Gerar CSV" para baixar o arquivo com todos os relacionamentos</li>
+                    <li>Clique em "🗑️ Limpar Tudo" para apagar todos os campos</li>
+                </ul>
+            </div>
+
+            <div class="artigos-grid">
+                <div>Artigo</div>
+                <div>Relacionado 1</div>
+                <div>Relacionado 2</div>
+                <div>Relacionado 3</div>
+                <div>Relacionado 4</div>
+                <div>Relacionado 5</div>
+                <div>Ação</div>
+            </div>
+
+            <div class="scroll-container" id="artigosContainer">
+                <!-- Artigos serão gerados aqui -->
+            </div>
+
+            <div class="actions">
+                <button class="btn-gerar-csv" onclick="gerarCSV()">
+                    📊 Gerar CSV
+                </button>
+                <button class="btn-limpar" onclick="limparTudo()">
+                    🗑️ Limpar Tudo
+                </button>
+            </div>
+
+            <div id="status" class="status" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // Dados dos relacionamentos
+        let relacionamentos = {};
+
+        // Gerar lista de artigos (1 a 341)
+        function gerarArtigos() {
+            const container = document.getElementById('artigosContainer');
+            
+            for (let i = 1; i <= 341; i++) {
+                const row = document.createElement('div');
+                row.className = 'artigo-row';
+                row.innerHTML = `
+                    <div class="artigo-numero">Art. ${i}</div>
+                    <input type="text" class="campo-relacionamento" data-artigo="${i}" data-campo="1" placeholder="Ex: 25">
+                    <input type="text" class="campo-relacionamento" data-artigo="${i}" data-campo="2" placeholder="Ex: 26">
+                    <input type="text" class="campo-relacionamento" data-artigo="${i}" data-campo="3" placeholder="Ex: 27">
+                    <input type="text" class="campo-relacionamento" data-artigo="${i}" data-campo="4" placeholder="Ex: 28">
+                    <input type="text" class="campo-relacionamento" data-artigo="${i}" data-campo="5" placeholder="Ex: 29">
+                    <button class="btn-ok" onclick="salvarArtigo(${i})">OK</button>
+                `;
+                container.appendChild(row);
+            }
+        }
+
+        // Salvar relacionamentos de um artigo
+        function salvarArtigo(numeroArtigo) {
+            const campos = document.querySelectorAll(`[data-artigo="${numeroArtigo}"]`);
+            const relacionados = [];
+            
+            campos.forEach(campo => {
+                const valor = campo.value.trim();
+                if (valor) {
+                    // Validar se é um número válido
+                    const num = parseInt(valor);
+                    if (num >= 1 && num <= 341 && num !== numeroArtigo) {
+                        relacionados.push(`art_${num}`);
+                    }
+                }
+            });
+
+            if (relacionados.length > 0) {
+                relacionamentos[`art_${numeroArtigo}`] = relacionados;
+                
+                // Marcar botão como salvo
+                const btn = document.querySelector(`[onclick="salvarArtigo(${numeroArtigo})"]`);
+                btn.textContent = '✓';
+                btn.classList.add('salvo');
+                
+                setTimeout(() => {
+                    btn.textContent = 'OK';
+                    btn.classList.remove('salvo');
+                }, 2000);
+                
+                mostrarStatus(`✅ Artigo ${numeroArtigo} salvo com ${relacionados.length} relacionamento(s)`, 'success');
+            } else {
+                mostrarStatus(`⚠️ Artigo ${numeroArtigo}: Nenhum relacionamento válido encontrado`, 'error');
+            }
+        }
+
+        // Gerar arquivo CSV
+        function gerarCSV() {
+            if (Object.keys(relacionamentos).length === 0) {
+                mostrarStatus('❌ Nenhum relacionamento foi salvo ainda!', 'error');
+                return;
+            }
+
+            let csv = 'artigo,relacionados\n';
+            
+            for (const [artigo, relacionados] of Object.entries(relacionamentos)) {
+                csv += `"${artigo}","${relacionados.join(', ')}"\n`;
+            }
+
+            // Criar e baixar arquivo
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'relacionamentos_artigos_ctb.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            mostrarStatus(`✅ CSV gerado com ${Object.keys(relacionamentos).length} artigos!`, 'success');
+        }
+
+        // Limpar todos os campos
+        function limparTudo() {
+            if (confirm('Tem certeza que deseja limpar todos os campos?')) {
+                const campos = document.querySelectorAll('.campo-relacionamento');
+                campos.forEach(campo => {
+                    campo.value = '';
+                });
+                
+                relacionamentos = {};
+                mostrarStatus('🗑️ Todos os campos foram limpos!', 'success');
+            }
+        }
+
+        // Mostrar status
+        function mostrarStatus(mensagem, tipo) {
+            const status = document.getElementById('status');
+            status.textContent = mensagem;
+            status.className = `status ${tipo}`;
+            status.style.display = 'block';
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 3000);
+        }
+
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            gerarArtigos();
+            mostrarStatus('📋 Interface carregada! Digite os relacionamentos nos campos.', 'success');
+        });
+    </script>
+</body>
+</html> 
