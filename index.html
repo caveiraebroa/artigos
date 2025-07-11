@@ -310,16 +310,15 @@
             if (relacionados.length > 0) {
                 relacionamentos[`art_${numeroArtigo}`] = relacionados;
                 
-                // Marcar botão como salvo
+                // Marcar botão como salvo e desabilitar campos
                 const btn = document.querySelector(`[onclick="salvarArtigo(${numeroArtigo})"]`);
                 btn.textContent = '✓';
                 btn.classList.add('salvo');
-                
-                setTimeout(() => {
-                    btn.textContent = 'OK';
-                    btn.classList.remove('salvo');
-                }, 2000);
-                
+                btn.disabled = true;
+                campos.forEach(campo => {
+                    campo.disabled = true;
+                });
+                // Linha concluída, não pode mais editar
                 mostrarStatus(`✅ Artigo ${numeroArtigo} salvo com ${relacionados.length} relacionamento(s)`, 'success');
             } else {
                 mostrarStatus(`⚠️ Artigo ${numeroArtigo}: Nenhum relacionamento válido encontrado`, 'error');
